@@ -1,0 +1,52 @@
+services:
+  django:
+    build: 
+      context: ./servicio1
+    container_name: servicio_django
+    ports:
+      - "8000:8000"
+    depends_on:
+      - postgres
+
+  fastapi:
+    build: 
+      context: ./servicio2
+    container_name: servicio_fastapi
+    ports:
+      - "8001:8000"
+    depends_on:
+      - postgres
+  
+  angular:
+    build: 
+      context: ./servicio3
+    container_name: servicio_angular
+    ports:
+      - "4200:80"
+
+  postgres:
+    image: postgres:16
+    container_name: servicio_postgreses
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: mydatabase
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data_ucmcloud:/var/lib/postgresql/data
+
+
+  pgadmin:
+    image: dpage/pgadmin4:latest
+    container_name: servicio_pgadmin
+    environment:
+      PGADMIN_DEFAULT_EMAIL: pgadmin4@pgadmin.org
+      PGADMIN_DEFAULT_PASSWORD: admin1234
+    ports:
+      - "5050:80"
+    depends_on:
+      - postgres
+
+volumes:
+  postgres_data_ucmcloud:
