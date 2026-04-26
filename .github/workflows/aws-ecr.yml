@@ -1,4 +1,4 @@
-name: Build, Push and Deploy to AWS ECS
+name: Build Push Deploy ECS
 
 on:
   push:
@@ -10,9 +10,11 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      # 1. Descargar código
       - name: Descargar código
         uses: actions/checkout@v4
 
+      # 2. Credenciales AWS
       - name: Configurar credenciales AWS
         uses: aws-actions/configure-aws-credentials@v4
         with:
@@ -20,32 +22,46 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ${{ secrets.AWS_REGION }}
 
+      # 3. Login ECR
       - name: Login en Amazon ECR
         uses: aws-actions/amazon-ecr-login@v2
 
+      #################################################
+      # BUILD + PUSH SERVICIO 1
+      #################################################
       - name: Build y Push servicio1
         run: |
           docker build -t servicio1 ./servicio1
           docker tag servicio1:latest 705690519982.dkr.ecr.us-east-2.amazonaws.com/servicio1:latest
           docker push 705690519982.dkr.ecr.us-east-2.amazonaws.com/servicio1:latest
 
+      #################################################
+      # BUILD + PUSH SERVICIO 2
+      #################################################
       - name: Build y Push servicio2
         run: |
           docker build -t servicio2 ./servicio2
           docker tag servicio2:latest 705690519982.dkr.ecr.us-east-2.amazonaws.com/servicio2:latest
           docker push 705690519982.dkr.ecr.us-east-2.amazonaws.com/servicio2:latest
 
+      #################################################
+      # BUILD + PUSH SERVICIO 3
+      #################################################
       - name: Build y Push servicio3
         run: |
           docker build -t servicio3 ./servicio3
           docker tag servicio3:latest 705690519982.dkr.ecr.us-east-2.amazonaws.com/servicio3:latest
           docker push 705690519982.dkr.ecr.us-east-2.amazonaws.com/servicio3:latest
 
+      #################################################
+      # DEPLOY ECS
+      #################################################
+
       - name: Actualizar servicio1 en ECS
         run: |
           aws ecs update-service \
             --cluster proyecto-aws-cluster \
-            --service servicio1-service \
+            --service servicio1-servicio \
             --force-new-deployment
 
       - name: Actualizar servicio2 en ECS
