@@ -1,24 +1,31 @@
 services:
   django:
-    build: 
+    build:
       context: ./servicio1
     container_name: servicio_django
     ports:
       - "8000:8000"
+    environment:
+      POSTGRES_DB: mydatabase
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_HOST: postgres
+      POSTGRES_PORT: 5432
+      ALLOWED_HOST: 18.219.40.51
     depends_on:
       - postgres
 
   fastapi:
-    build: 
+    build:
       context: ./servicio2
     container_name: servicio_fastapi
     ports:
       - "8001:8000"
     depends_on:
       - postgres
-  
+
   angular:
-    build: 
+    build:
       context: ./servicio3
     container_name: servicio_angular
     ports:
@@ -35,7 +42,6 @@ services:
       - "5432:5432"
     volumes:
       - postgres_data_ucmcloud:/var/lib/postgresql/data
-
 
   pgadmin:
     image: dpage/pgadmin4:latest
