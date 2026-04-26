@@ -1,0 +1,43 @@
+name: Build and Push to AWS ECR
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build-and-push:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Descargar código
+        uses: actions/checkout@v4
+
+      - name: Configurar credenciales AWS
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ secrets.AWS_REGION }}
+
+      - name: Login en Amazon ECR
+        uses: aws-actions/amazon-ecr-login@v2
+
+      - name: Build y Push servicio1
+        run: |
+          docker build -t servicio1 ./servicio1
+          docker tag servicio1:latest 705690519982.dkr.ecr.us-east-2.amazonaws.com/servicio1:latest
+          docker push 705690519982.dkr.ecr.us-east-2.amazonaws.com/servicio1:latest
+
+      - name: Build y Push servicio2
+        run: |
+          docker build -t servicio2 ./servicio2
+          docker tag servicio2:latest 705690519982.dkr.ecr.us-east-2.amazonaws.com/servicio2:latest
+          docker push 705690519982.dkr.ecr.us-east-2.amazonaws.com/servicio2:latest
+
+      - name: Build y Push servicio3
+        run: |
+          docker build -t servicio3 ./servicio3
+          docker tag servicio3:latest 705690519982.dkr.ecr.us-east-2.amazonaws.com/servicio3:latest
+          docker push 705690519982.dkr.ecr.us-east-2.amazonaws.com/servicio3:latest
+          
