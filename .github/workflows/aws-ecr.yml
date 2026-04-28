@@ -40,5 +40,27 @@ jobs:
           docker build -t servicio3 ./servicio3
           docker tag servicio3:latest 705690519982.dkr.ecr.us-east-2.amazonaws.com/servicio3:latest
           docker push 705690519982.dkr.ecr.us-east-2.amazonaws.com/servicio3:latest
+
+      - name: Actualizar servicio1 en AWS ECS
+        run: |
+          aws ecs update-service \
+          --cluster cluster \
+          --service servicio1-task-service-uo23j4cw \
+          --force-new-deployment
+
+      - name: Actualizar servicio2 en AWS ECS
+        run: |
+          aws ecs update-service \
+          --cluster cluster \
+          --service servicio2-task-service-aavd6hvb \
+          --force-new-deployment
+
+      - name: Actualizar servicio3 en AWS ECS
+        run: |
+          aws ecs update-service \
+          --cluster cluster \
+          --service servicio3-task-service-8h3fo09z \
+          --force-new-deployment
+          
         
 
